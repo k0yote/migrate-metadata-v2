@@ -73,3 +73,7 @@ func getDefaultRpcUrl(network, apiKey string, thirdpartyProvider ThirdpartyProvi
 func (sdk *K0yote3WebSDK) GetDownload(opts *DownloadMetaOptions) (*Download, error) {
 	return newDownload(opts)
 }
+
+func (sdk *K0yote3WebSDK) GetRewriter(ipfsImageBaseURL, inputDir, outputDir string) (*MetaRewriter, error) {
+	return newMetaRewriter(ipfsImageBaseURL, inputDir, outputDir)
+}

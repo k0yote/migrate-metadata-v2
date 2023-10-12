@@ -36,6 +36,7 @@ func init() {
 	viper.SetDefault("chainRpcUrl", "polygon-mumbai")
 
 	rootCmd.AddCommand(downloadCmd)
+	rootCmd.AddCommand(rewriteCmd)
 }
 
 func initConfig() {

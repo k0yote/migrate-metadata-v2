@@ -11,7 +11,7 @@ func TestRewriteMeta(t *testing.T) {
 		ipfsImageBaseURL = "https://cloudflare-ipfs.com/ipfs/QmNTE1Uvz8JqkL81sJ6UMxw2fwfhtfU8LBtA9SY8t1yD7E/"
 	)
 
-	helper := newRewriteHelper(ipfsImageBaseURL)
-	err := helper.rewrite()
+	helper, err := newMetaRewriter(ipfsImageBaseURL, "", "")
 	assert.NoError(t, err)
+	assert.NoError(t, helper.rewrite())
 }

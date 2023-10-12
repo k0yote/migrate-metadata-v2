@@ -6,21 +6,47 @@ import (
 	"path/filepath"
 )
 
-type rewriteHelper struct {
+var counter int
+
+type MetaRewriter struct {
 	inputDir         string
 	outputDir        string
 	ipfsImageBaseURL string
 }
 
-func newRewriteHelper(ipfsImageBaseURL string) rewriteHelper {
-	return rewriteHelper{
+func newMetaRewriter(ipfsImageBaseURL, inputDir, outputDir string) (*MetaRewriter, error) {
+
+	in := metadataFolderName
+	out := uploadFolderName
+
+	if len(inputDir) > 0 {
+		in = inputDir
+		if _, err := getSavePath(in); err != nil {
+			return nil, err
+		}
+	}
+
+	if len(outputDir) > 0 {
+		out = outputDir
+		if _, err := getSavePath(out); err != nil {
+			return nil, err
+		}
+	}
+
+	counter = 0
+
+	return &MetaRewriter{
 		inputDir:         metadataFolderName,
 		outputDir:        uploadFolderName,
 		ipfsImageBaseURL: ipfsImageBaseURL,
-	}
+	}, nil
 }
 
-func (r rewriteHelper) rewrite() error {
+func (r *MetaRewriter) Rewrite() error {
+	return r.rewrite()
+}
+
+func (r MetaRewriter) rewrite() error {
 	metaDir, err := getSavePath(r.inputDir)
 	if err != nil {
 		return err
@@ -64,4 +90,8 @@ func (r rewriteHelper) rewrite() error {
 	}
 
 	return nil
+}
+
+func (r *MetaRewriter) Counter() int {
+	return counter
 }

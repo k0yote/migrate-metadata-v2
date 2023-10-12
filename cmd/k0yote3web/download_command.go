@@ -10,8 +10,6 @@ var (
 	startTokenID int
 	endTokenID   int
 	baseURL      string
-
-	ipfsImageBaseURL string
 )
 
 var downloadCmd = &cobra.Command{
@@ -57,23 +55,6 @@ var downloadImagesCmd = &cobra.Command{
 	},
 }
 
-var replaceMetaCmd = &cobra.Command{
-	Use:   "replace-meta",
-	Short: "rewrite image url with ipfs in metadata json",
-	Run: func(cmd *cobra.Command, args []string) {
-		download, err := getDownload()
-		if err != nil {
-			panic(err)
-		}
-
-		if err := download.DownloadAndSaveImage(); err != nil {
-			panic(err)
-		}
-
-		log.Printf("images download completed count: [%d]\n", download.GetDownloadImageCount())
-	},
-}
-
 func init() {
 	downloadCmd.PersistentFlags().IntVarP(&startTokenID, "sTokenId", "s", 0, "start from download token id")
 	downloadCmd.PersistentFlags().IntVarP(&endTokenID, "eTokenId", "e", 0, "end to download token id")
@@ -83,5 +64,4 @@ func init() {
 
 	downloadCmd.AddCommand(downloadMetasCmd)
 	downloadCmd.AddCommand(downloadImagesCmd)
-	downloadCmd.AddCommand(replaceMetaCmd)
 }
