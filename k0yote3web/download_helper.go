@@ -30,16 +30,10 @@ func newDownloadHelper(opts *DownloadMetaOptions) (*downloadHelper, error) {
 	}, nil
 }
 
-func (d *downloadHelper) updateEndpoints(endpoints []string) {
-	if len(endpoints) > 0 {
-		d.endpoints = endpoints
-	}
-}
-
-func (d *downloadHelper) downloadMultipleFiles() ([]DownloadCh, error) {
-	done := make(chan DownloadCh, len(d.endpoints))
-	errch := make(chan error, len(d.endpoints))
-	for _, endpoint := range d.endpoints {
+func downloadMultipleFiles(endpoints []string) ([]DownloadCh, error) {
+	done := make(chan DownloadCh, len(endpoints))
+	errch := make(chan error, len(endpoints))
+	for _, endpoint := range endpoints {
 		go func(endpoint string) {
 			b, err := downloadFile(endpoint)
 			if err != nil {
@@ -58,7 +52,7 @@ func (d *downloadHelper) downloadMultipleFiles() ([]DownloadCh, error) {
 
 	downloadArr := make([]DownloadCh, 0)
 	var errStr string
-	for i := 0; i < len(d.endpoints); i++ {
+	for i := 0; i < len(endpoints); i++ {
 		downloadArr = append(downloadArr, <-done)
 		if err := <-errch; err != nil {
 			errStr = errStr + " " + err.Error()
@@ -106,7 +100,7 @@ func makeMetadataEndpointList(baseURL string, startTokenID int, endTokenID int) 
 	endpoints := []string{}
 
 	for i := startTokenID; i <= endTokenID; i++ {
-		endpoint, err := url.JoinPath(fmt.Sprintf(baseURL, i))
+		endpoint, err := url.JoinPath(fmt.Sprintf("%s%d", baseURL, i))
 		if err != nil {
 			return nil, err
 		}

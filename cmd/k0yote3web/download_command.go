@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -11,6 +10,8 @@ var (
 	startTokenID int
 	endTokenID   int
 	baseURL      string
+
+	ipfsImageBaseURL string
 )
 
 var downloadCmd = &cobra.Command{
@@ -35,24 +36,52 @@ var downloadMetasCmd = &cobra.Command{
 			panic(err)
 		}
 
-		log.Printf("metadata download completed url: [%s] startTokenID: [%d] endTokenID: [%d]\n", baseURL, startTokenID, endTokenID)
+		log.Printf("metadata download completed url: [%s] startTokenID: [%d] endTokenID: [%d] count: [%d]\n", baseURL, startTokenID, endTokenID, download.GetDownloadMetaCount())
 	},
 }
 
 var downloadImagesCmd = &cobra.Command{
 	Use:   "image",
-	Short: "Upload data with storage interface",
+	Short: "download image from metadata json",
 	Run: func(cmd *cobra.Command, args []string) {
+		download, err := getDownload()
+		if err != nil {
+			panic(err)
+		}
 
-		fmt.Println("Successfully uploaded to URI:", "")
-		fmt.Println("Successfully uploaded to URI:", "")
+		if err := download.DownloadAndSaveImage(); err != nil {
+			panic(err)
+		}
+
+		log.Printf("images download completed count: [%d]\n", download.GetDownloadImageCount())
+	},
+}
+
+var replaceMetaCmd = &cobra.Command{
+	Use:   "replace-meta",
+	Short: "rewrite image url with ipfs in metadata json",
+	Run: func(cmd *cobra.Command, args []string) {
+		download, err := getDownload()
+		if err != nil {
+			panic(err)
+		}
+
+		if err := download.DownloadAndSaveImage(); err != nil {
+			panic(err)
+		}
+
+		log.Printf("images download completed count: [%d]\n", download.GetDownloadImageCount())
 	},
 }
 
 func init() {
-	downloadCmd.PersistentFlags().IntVarP(&startTokenID, "sTokenId", "s", 1, "start from download token id")
-	downloadCmd.PersistentFlags().IntVarP(&endTokenID, "eTokenId", "e", 1, "end to download token id")
+	downloadCmd.PersistentFlags().IntVarP(&startTokenID, "sTokenId", "s", 0, "start from download token id")
+	downloadCmd.PersistentFlags().IntVarP(&endTokenID, "eTokenId", "e", 0, "end to download token id")
 	downloadCmd.PersistentFlags().StringVarP(&baseURL, "baseUrl", "b", "", "base URL to download")
+
+	downloadCmd.PersistentFlags().StringVarP(&ipfsImageBaseURL, "ipfsImageBaseUrl", "g", "", "ipfs image Base URL")
+
 	downloadCmd.AddCommand(downloadMetasCmd)
 	downloadCmd.AddCommand(downloadImagesCmd)
+	downloadCmd.AddCommand(replaceMetaCmd)
 }

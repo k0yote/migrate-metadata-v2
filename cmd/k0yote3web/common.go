@@ -36,3 +36,17 @@ func getDownload() (*k0yote3web.Download, error) {
 		},
 	)
 }
+
+func rewrite() (*k0yote3web.Download, error) {
+	if k0yote3webSDK == nil {
+		initSdk()
+	}
+
+	return k0yote3webSDK.GetDownload(
+		&k0yote3web.DownloadMetaOptions{
+			BaseURL:      baseURL,
+			StartTokenID: startTokenID,
+			EndTokenID:   endTokenID,
+		},
+	)
+}
