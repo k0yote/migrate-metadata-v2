@@ -36,8 +36,8 @@ func newMetaRewriter(ipfsImageBaseURL, inputDir, outputDir string) (*MetaRewrite
 	counter = 0
 
 	return &MetaRewriter{
-		inputDir:         metadataFolderName,
-		outputDir:        uploadFolderName,
+		inputDir:         in,
+		outputDir:        out,
 		ipfsImageBaseURL: ipfsImageBaseURL,
 	}, nil
 }
@@ -87,6 +87,8 @@ func (r MetaRewriter) rewrite() error {
 		if err := saveJson(metaByte, outputDir, metaFile.Name()); err != nil {
 			return err
 		}
+
+		counter++
 	}
 
 	return nil

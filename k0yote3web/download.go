@@ -1,10 +1,8 @@
 package k0yote3web
 
 import (
-	"fmt"
 	"log"
 	"math"
-	"os"
 	"time"
 
 	"golang.org/x/exp/slices"
@@ -42,6 +40,7 @@ func (d Download) DownloadAndSaveMetadata() error {
 
 	maxPage := d.GetMetaMaxPage()
 
+	downloadAndSavedCount := 0
 	for i := 1; i <= maxPage; i++ {
 		endpoints, _, _ := pagination(d.downloadHelper.endpoints, i, fetchDownloadMetaLimit)
 
@@ -56,6 +55,8 @@ func (d Download) DownloadAndSaveMetadata() error {
 			}
 		}
 
+		downloadAndSavedCount += len(downloadList)
+		log.Println("downloaded and saved count: ", downloadAndSavedCount)
 		time.Sleep(waitTime)
 	}
 
@@ -67,21 +68,6 @@ func (d Download) DownloadAndSaveImage() error {
 	if err != nil {
 		return err
 	}
-
-	endpointsMap := make(map[string]int)
-	for _, endpoint := range endpoints {
-		endpointsMap[endpoint]++
-	}
-
-	total := 0
-	for img, cnt := range endpointsMap {
-		total += cnt
-		fmt.Printf("Image: [%s] => %d\n", img, cnt)
-	}
-
-	fmt.Println("total images count: ", total)
-
-	os.Exit(1)
 
 	slices.Sort(endpoints)
 	uniqueEndpoints := slices.Compact(endpoints)

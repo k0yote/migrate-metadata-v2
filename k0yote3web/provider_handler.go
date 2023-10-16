@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"errors"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -100,6 +101,7 @@ func getPublicAddress(key *ecdsa.PrivateKey) (common.Address, error) {
 }
 
 func processPrivateKey(privateKey string) (*ecdsa.PrivateKey, common.Address, error) {
+	privateKey = strings.TrimPrefix(privateKey, "0x")
 	key, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
 		// TODO: return better error

@@ -49,3 +49,19 @@ const (
 func (g GasPriority) Value() float64 {
 	return float64(g)
 }
+
+type IPFSProvider string
+
+const (
+	IPFS_INFURA IPFSProvider = "infura"
+	IPFS_LOCAL  IPFSProvider = "local"
+)
+
+type IPFSOptions struct {
+	ProviderType IPFSProvider
+	ProjectID    string
+	Secret       string
+	ApiURL       string
+	Pin          bool
+	Verbose      bool
+}

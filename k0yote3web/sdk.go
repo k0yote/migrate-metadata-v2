@@ -8,15 +8,13 @@ import (
 
 type K0yote3WebSDK struct {
 	*ProviderHandler
-	Deployer *ContractDeployer
-	Download Download
+	Deployer     *ContractDeployer
+	Download     Download
+	IpfsUploader IpfsUploader
 }
 
 func NewK0yote3WebSDK(rpcUrlOrChainName string, options *SDKOptions) (*K0yote3WebSDK, error) {
-	rpc, err := getDefaultRpcUrl(rpcUrlOrChainName, options.ApiKey, options.ThirdpartyProvier)
-	if err != nil {
-		return nil, err
-	}
+	rpc := getDefaultRpcUrl(rpcUrlOrChainName, options.ApiKey, options.ThirdpartyProvier)
 
 	provider, err := ethclient.Dial(rpc)
 	if err != nil {
@@ -59,14 +57,14 @@ func NewThirdwebSDKFromProvider(provider *ethclient.Client, options *SDKOptions)
 }
 
 // network to (e.g mainnet, sepolia, polygon, polygon-mumbai)
-func getDefaultRpcUrl(network, apiKey string, thirdpartyProvider ThirdpartyProvider) (string, error) {
+func getDefaultRpcUrl(network, apiKey string, thirdpartyProvider ThirdpartyProvider) string {
 	switch thirdpartyProvider {
 	case INFURA:
-		return fmt.Sprintf("https://%s.infura.io/v3/%s", network, apiKey), nil
+		return fmt.Sprintf("https://%s.infura.io/v3/%s", network, apiKey)
 	case ALCHEMY:
-		return fmt.Sprintf("https://%s.g.alchemy.com/v2/%s", network, apiKey), nil
+		return fmt.Sprintf("https://%s.g.alchemy.com/v2/%s", network, apiKey)
 	default:
-		return "", fmt.Errorf("unknown third party provider: %s", thirdpartyProvider)
+		return "http://localhost:8545"
 	}
 }
 
@@ -76,4 +74,8 @@ func (sdk *K0yote3WebSDK) GetDownload(opts *DownloadMetaOptions) (*Download, err
 
 func (sdk *K0yote3WebSDK) GetRewriter(ipfsImageBaseURL, inputDir, outputDir string) (*MetaRewriter, error) {
 	return newMetaRewriter(ipfsImageBaseURL, inputDir, outputDir)
+}
+
+func (sdk *K0yote3WebSDK) GetIpfsUploader(opts *IPFSOptions) (*IpfsUploader, error) {
+	return newIpfsUploader(opts)
 }

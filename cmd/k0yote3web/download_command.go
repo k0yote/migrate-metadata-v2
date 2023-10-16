@@ -14,7 +14,7 @@ var (
 
 var downloadCmd = &cobra.Command{
 	Use:   "download [command]",
-	Short: "Interact with the Metadata from cloudstorage or self-hosted service interface",
+	Short: "Interact with the Metadata from cloudstorage or self-hosted image distribution's service",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Please input a command to run")
@@ -59,8 +59,6 @@ func init() {
 	downloadCmd.PersistentFlags().IntVarP(&startTokenID, "sTokenId", "s", 0, "start from download token id")
 	downloadCmd.PersistentFlags().IntVarP(&endTokenID, "eTokenId", "e", 0, "end to download token id")
 	downloadCmd.PersistentFlags().StringVarP(&baseURL, "baseUrl", "b", "", "base URL to download")
-
-	downloadCmd.PersistentFlags().StringVarP(&ipfsImageBaseURL, "ipfsImageBaseUrl", "g", "", "ipfs image Base URL")
 
 	downloadCmd.AddCommand(downloadMetasCmd)
 	downloadCmd.AddCommand(downloadImagesCmd)

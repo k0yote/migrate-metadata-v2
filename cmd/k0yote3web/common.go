@@ -48,3 +48,18 @@ func getRewrite() (*k0yote3web.MetaRewriter, error) {
 		outputDir,
 	)
 }
+
+func getIpfsUploader() (*k0yote3web.IpfsUploader, error) {
+	if k0yote3webSDK == nil {
+		initSdk()
+	}
+
+	opts := &k0yote3web.IPFSOptions{
+		ProviderType: k0yote3web.IPFSProvider(providerType),
+		ProjectID:    projectID,
+		Secret:       secret,
+		Pin:          true,
+		Verbose:      true,
+	}
+	return k0yote3webSDK.GetIpfsUploader(opts)
+}
