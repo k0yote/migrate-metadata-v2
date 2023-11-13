@@ -65,3 +65,10 @@ type IPFSOptions struct {
 	Pin          bool
 	Verbose      bool
 }
+
+type WalletType string
+
+const (
+	EOA WalletType = "EOA"
+	KMS WalletType = "KMS"
+)
