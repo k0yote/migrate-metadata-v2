@@ -2,6 +2,7 @@ package k0yote3web
 
 import (
 	"encoding/json"
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -76,7 +77,10 @@ func (r MetaRewriter) rewrite() error {
 		}
 
 		filename := filepath.Base(m.Image)
-		newImagePath := filepath.Join(r.ipfsImageBaseURL, filename)
+		newImagePath, err := url.JoinPath(r.ipfsImageBaseURL, filename)
+		if err != nil {
+			return err
+		}
 		m.Image = newImagePath
 
 		metaByte, err := json.Marshal(m)
